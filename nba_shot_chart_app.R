@@ -1,10 +1,5 @@
 # Scout Report Generator (Shiny)
-# Readymade, single-file app
-# - Conference -> Team -> Position -> Player filter order
-# - Synthetic shots (replaceable later), but adds scout priors so draft ranges are believable
-# - Tabs: (1) Scout Snapshot + Scout Notes (2) NBA Comparison (3) Position Rank + Draft Fit (4) Shot Deep Dive
-# - Role Archetype line (shot diet + efficiency thresholds)
-# - Strengths/Concerns always populate (absolute + relative logic)
+
 
 required_packages <- c(
   "shiny", "ggplot2", "dplyr", "plotly", "viridis", "hexbin",
