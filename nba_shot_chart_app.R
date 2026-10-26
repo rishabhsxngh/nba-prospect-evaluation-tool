@@ -1,17 +1,20 @@
 # Scout Report Generator (Shiny)
 
 
-required_packages <- c(
-  "shiny", "ggplot2", "dplyr", "plotly", "viridis", "hexbin",
-  "scales", "bslib", "bsicons", "stringr"
-)
-
-for (pkg in required_packages) {
-  if (!require(pkg, character.only = TRUE)) {
-    install.packages(pkg, dependencies = TRUE)
-    library(pkg, character.only = TRUE)
-  }
-}
+# Explicit library() calls so hosts like shinyapps.io can detect dependencies.
+# Install locally first with:
+#   install.packages(c("shiny", "ggplot2", "dplyr", "plotly", "viridis",
+#                      "hexbin", "scales", "bslib", "bsicons", "stringr"))
+library(shiny)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(viridis)
+library(hexbin)
+library(scales)
+library(bslib)
+library(bsicons)
+library(stringr)
 
 # -----------------------------
 # Players with scout priors
@@ -806,6 +809,13 @@ ui <- bslib::page_sidebar(
         "This app uses synthetic shots for the visual layer, then blends shot profile with scout priors (tier, grade, role value) so draft ranges and comps behave coherently."
       )
     )
+  ),
+  div(
+    class = "alert alert-warning",
+    role = "alert",
+    tags$strong("Simulated data. "),
+    "Shots are generated from scouting priors set by hand, so the shot charts, draft ranges, and NBA comps ",
+    "demonstrate the app and method. They are not real evaluations of these players."
   ),
   bslib::layout_column_wrap(
     width = 1,
