@@ -169,6 +169,53 @@ players$archetype <- nm[players$cluster]
 print(cbind(cen[, c("cluster", "n")], archetype = nm))
 
 dir.create("data", showWarnings = FALSE)
+
+# ---- NBA comparison pool (2025-26 regular season) -------------------------
+# Same features, computed for NBA players, standardized *within the NBA* so a
+# college player is matched to the NBA player who plays the most similar role
+# relative to their own league. This is a style match, not a talent projection.
+NBA_MIN_FGA <- 300; NBA_MIN_MIN <- 500
+nba_pbp <- get_rds(sprintf("%s/espn_nba_pbp/play_by_play_%d.rds", BASE, SEASON))
+nba_box <- get_rds(sprintf("%s/espn_nba_player_boxscores/player_box_%d.rds", BASE, SEASON))
+
+nba_shots <- nba_pbp |>
+  filter(shooting_play, season_type == 2, points_attempted %in% c(2, 3), !is.na(athlete_id_1),
+         abs(coordinate_x) <= 47, abs(coordinate_y) <= 25) |>
+  transmute(
+    pid = athlete_id_1, made = as.integer(scoring_play), three = as.integer(points_attempted == 3),
+    assisted = as.integer(scoring_play & !is.na(athlete_id_2)),
+    kind = case_when(grepl("Dunk", type_text) ~ "dunk", grepl("Layup|Tip|Finger Roll|Hook|Alley", type_text) ~ "layup", TRUE ~ "jumper"),
+    ly = coordinate_x, lx = coordinate_y) |>
+  mutate(sgn = ifelse(ly >= 0, 1, -1), hy = HOOP_X - abs(ly), hx = lx * sgn, d = sqrt(hx^2 + hy^2)) |>
+  filter(!(three == 1 & d < 20), !(three == 0 & d > 25)) |>
+  mutate(zone = factor(zone_of(three, d, hx, hy), levels = ZONES))
+cat("NBA shots:", nrow(nba_shots), "\n")
+
+nba_box <- nba_box |> filter(season_type == 2, !is.na(athlete_id), !isTRUE(did_not_play))
+nba_tot <- nba_box |>
+  group_by(pid = athlete_id) |>
+  summarise(name = first(athlete_display_name),
+            team = names(sort(table(team_location), decreasing = TRUE))[1],
+            pos = names(sort(table(athlete_position_abbreviation), decreasing = TRUE))[1],
+            games = n(), minutes = sum(minutes, na.rm = TRUE), pts = sum(points, na.rm = TRUE),
+            fga_box = sum(field_goals_attempted, na.rm = TRUE), fta = sum(free_throws_attempted, na.rm = TRUE),
+            reb = sum(rebounds, na.rm = TRUE), ast = sum(assists, na.rm = TRUE), stl = sum(steals, na.rm = TRUE),
+            blk = sum(blocks, na.rm = TRUE), .groups = "drop")
+nba_prof <- nba_shots |> group_by(pid) |>
+  summarise(fga = n(), tpa = sum(three), a_rim = sum(zone == "Restricted area"), a_mid = sum(zone == "Mid-range"),
+            a_c3 = sum(zone == "Corner 3"), dunk_att = sum(kind == "dunk"),
+            made = sum(made), assisted = sum(assisted), .groups = "drop")
+nba <- nba_tot |> inner_join(nba_prof, by = "pid") |> filter(fga >= NBA_MIN_FGA, minutes >= NBA_MIN_MIN) |>
+  mutate(three_rate = tpa / fga, rim_rate = a_rim / fga, mid_rate = a_mid / fga,
+         corner_share = a_c3 / pmax(tpa, 1), self_created = 1 - assisted / pmax(made, 1),
+         dunk_rate = dunk_att / fga, fga40 = fga / minutes * 40, ast40 = ast / minutes * 40,
+         reb40 = reb / minutes * 40, blk40 = blk / minutes * 40, stl40 = stl / minutes * 40,
+         ft_rate = fta / pmax(fga_box, 1), pts40 = pts / minutes * 40, mpg = minutes / games)
+cat("NBA players:", nrow(nba), " parsed/box FGA:", round(sum(nba$fga) / sum(nba$fga_box), 3), "\n")
+NZ <- scale(as.matrix(nba[, FEATS])); NZ[is.na(NZ)] <- 0
+nba <- bind_cols(nba, setNames(as.data.frame(NZ), paste0("z_", FEATS)))
+saveRDS(nba, "data/nba_players.rds", compress = "xz")
+
 # ---- Save shots for qualified players, league hex baseline ---------------
 q <- shots |> filter(pid %in% players$pid)
 league <- list(zone = league_zone, season = "2025-26", n_shots = nrow(shots), n_players = nrow(players),
