@@ -94,15 +94,15 @@ court_lines <- local({
   bind_rows(lapply(names(L), function(n) cbind(L[[n]], part = n)))
 })
 court_lines_layer <- function(alpha = 1) {
-  geom_path(data = court_lines, aes(x, y, group = part), colour = "#5d6473", linewidth = 0.5, alpha = alpha)
+  geom_path(data = court_lines, aes(x, y, group = part), colour = "#5f5877", linewidth = 0.5, alpha = alpha)
 }
 court_layer <- function() {
   list(
     coord_fixed(xlim = c(-25.5, 25.5), ylim = c(-5.75, 36.5), expand = FALSE),
     theme_void(base_size = 12),
-    theme(plot.background = element_rect(fill = "#fbfaf7", colour = NA),
-          panel.background = element_rect(fill = "#fbfaf7", colour = NA),
-          legend.position = "bottom", legend.text = element_text(size = 9, colour = "#6b7280"),
+    theme(plot.background = element_rect(fill = "#faf8fc", colour = NA),
+          panel.background = element_rect(fill = "#faf8fc", colour = NA),
+          legend.position = "none",
           plot.margin = margin(2, 2, 2, 2))
   )
 }
@@ -110,7 +110,7 @@ court_layer <- function() {
 # ---------------------------------------------------------------------------
 # Helpers and metric definitions
 # ---------------------------------------------------------------------------
-INK <- "#171b24"; NAVY <- "#1c2a4a"; ACCENT <- "#b5541a"; SLATE <- "#7a8699"; MUTED <- "#6b7280"
+INK <- "#1f1933"; NAVY <- "#3b2a6b"; ACCENT <- "#c77d14"; SLATE <- "#9a93b3"; MUTED <- "#6b6580"
 
 pct_txt <- function(x, d = 0) ifelse(is.na(x), "-", paste0(formatC(100 * x, format = "f", digits = d), "%"))
 ord <- function(n) {
@@ -174,64 +174,82 @@ fmt_metric <- function(v, key) {
 # UI
 # ---------------------------------------------------------------------------
 theme <- bs_theme(
-  version = 5, bg = "#fbfaf7", fg = INK, primary = NAVY, secondary = MUTED,
-  base_font = font_collection("Inter", "-apple-system", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"),
-  heading_font = font_collection("Iowan Old Style", "Charter", "Georgia", "Times New Roman", "serif"),
+  version = 5, bg = "#faf8fc", fg = INK, primary = NAVY, secondary = MUTED,
+  base_font = font_collection("IBM Plex Sans", "-apple-system", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"),
+  heading_font = font_collection("IBM Plex Serif", "Charter", "Georgia", "Times New Roman", "serif"),
   "font-size-base" = "0.94rem", "border-radius" = "2px", "border-radius-lg" = "2px",
-  "navbar-bg" = "#fbfaf7"
+  "navbar-bg" = "#faf8fc"
 )
 
 css <- "
-  body { background:#fbfaf7; font-variant-numeric: tabular-nums; }
-  .navbar { border-bottom:1px solid #e4e0d6; padding-top:.35rem; padding-bottom:.35rem; box-shadow:none; }
+  @font-face { font-family:'IBM Plex Sans'; font-weight:400; src:url('fonts/IBMPlexSans-Regular.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans'; font-weight:500; src:url('fonts/IBMPlexSans-Medium.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans'; font-weight:600; src:url('fonts/IBMPlexSans-SemiBold.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'IBM Plex Serif'; font-weight:400; src:url('fonts/IBMPlexSerif-Regular.woff2') format('woff2'); font-display:swap; }
+  @font-face { font-family:'IBM Plex Serif'; font-weight:500; src:url('fonts/IBMPlexSerif-Medium.woff2') format('woff2'); font-display:swap; }
+  :root { --serif: 'IBM Plex Serif', Charter, Georgia, serif; }
+  body { background:#faf8fc; font-variant-numeric: tabular-nums; }
+  .navbar { border-bottom:1px solid #e2dcee; padding-top:.35rem; padding-bottom:.35rem; box-shadow:none; }
   .navbar-brand { font-family:inherit; font-weight:600; font-size:.95rem; letter-spacing:.01em; }
-  .navbar .nav-link { font-size:.9rem; color:#6b7280; }
-  .navbar .nav-link.active { color:#171b24; font-weight:600; border-bottom:2px solid #171b24; }
+  .navbar .nav-link { font-size:.9rem; color:#6b6580; }
+  .navbar .nav-link.active { color:#1f1933; font-weight:600; border-bottom:2px solid #1f1933; }
   .wrap { max-width:1080px; margin:0 auto; padding:26px 20px 70px; }
-  .eyebrow { font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#6b7280; margin:0 0 6px; font-weight:600; }
-  .sect { border-top:1px solid #171b24; margin-top:34px; padding-top:10px; }
-  .sect h3 { font-family:inherit; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; font-weight:700; margin:0 0 14px; color:#171b24; }
-  .picker .selectize-input { border-radius:2px; border-color:#c9c4b6; box-shadow:none; padding:9px 12px; font-size:1rem; }
+  .eyebrow { font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#6b6580; margin:0 0 6px; font-weight:600; }
+  .sect { border-top:1px solid #1f1933; margin-top:34px; padding-top:10px; }
+  .sect h3 { font-family:inherit; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; font-weight:700; margin:0 0 14px; color:#1f1933; }
+  .picker .selectize-input { border-radius:2px; border-color:#cfc7e0; box-shadow:none; padding:9px 12px; font-size:1rem; }
   .picker .form-group { margin-bottom:4px; max-width:520px; }
-  .picker .hint { color:#6b7280; font-size:.8rem; }
-  .player h1 { font-size:2.3rem; font-weight:500; margin:22px 0 2px; letter-spacing:-.01em; }
-  .player .meta { color:#6b7280; font-size:.9rem; }
+  .picker .hint { color:#6b6580; font-size:.8rem; }
+  .player h1 { font-family:var(--serif); font-size:2.3rem; font-weight:500; margin:22px 0 2px; letter-spacing:-.01em; }
+  .player .meta { color:#6b6580; font-size:.9rem; }
   .player .arch { margin-top:8px; font-size:.9rem; }
   .player .arch b { font-weight:600; }
-  .keys { display:flex; flex-wrap:wrap; margin:20px 0 0; border-top:1px solid #e4e0d6; border-bottom:1px solid #e4e0d6; }
-  .keys .k { flex:1 1 110px; padding:10px 14px; border-left:1px solid #e4e0d6; }
+  .keys { display:flex; flex-wrap:wrap; margin:20px 0 0; border-top:1px solid #e2dcee; border-bottom:1px solid #e2dcee; }
+  .keys .k { flex:1 1 110px; padding:10px 14px; border-left:1px solid #e2dcee; }
   .keys .k:first-child { border-left:0; padding-left:0; }
-  .keys .v { font-family:Charter, Georgia, serif; font-size:1.5rem; line-height:1.15; }
-  .keys .l { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:#6b7280; }
+  .keys .v { font-family:var(--serif); font-size:1.5rem; line-height:1.15; }
+  .keys .l { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:#6b6580; }
   .stand { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px 44px; }
-  .stand h4 { font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; color:#6b7280; margin:0 0 6px; font-weight:600; }
+  .stand h4 { font-family:var(--bs-body-font-family); font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; color:#6b6580; margin:0 0 6px; font-weight:600; }
   .stand ul { list-style:none; padding:0; margin:0; }
-  .stand li { padding:5px 0; border-bottom:1px solid #ece8de; display:flex; justify-content:space-between; gap:14px; font-size:.9rem; }
-  .stand li span.p { color:#6b7280; white-space:nowrap; }
-  .stand .up li::before { content:''; width:6px; height:6px; background:#b5541a; margin:7px 8px 0 0; flex:none; }
-  .stand .dn li::before { content:''; width:6px; height:6px; background:#7a8699; margin:7px 8px 0 0; flex:none; }
+  .stand li { padding:5px 0; border-bottom:1px solid #ebe6f3; display:flex; justify-content:space-between; gap:14px; font-size:.9rem; }
+  .stand li span.p { color:#6b6580; white-space:nowrap; }
+  .stand .up li::before { content:''; width:6px; height:6px; background:#c77d14; margin:7px 8px 0 0; flex:none; }
+  .stand .dn li::before { content:''; width:6px; height:6px; background:#9a93b3; margin:7px 8px 0 0; flex:none; }
   .stand li div { flex:1; display:flex; }
   .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px 44px; }
   .viewtoggle .shiny-options-group { display:flex; gap:16px; }
   .viewtoggle .form-check { padding-left:0; margin:0; }
   .viewtoggle input { display:none; }
-  .viewtoggle label { cursor:pointer; font-size:.82rem; color:#6b7280; padding-bottom:2px; border-bottom:2px solid transparent; }
-  .viewtoggle input:checked + span { color:#171b24; font-weight:600; border-bottom:2px solid #171b24; }
+  .viewtoggle label { cursor:pointer; font-size:.82rem; color:#6b6580; padding-bottom:2px; border-bottom:2px solid transparent; }
+  .viewtoggle input:checked + span { color:#1f1933; font-weight:600; border-bottom:2px solid #1f1933; }
   .viewtoggle .form-group { margin:0 0 6px; }
   table.shiny-table, .shiny-table { width:100%; border-collapse:collapse; font-size:.88rem; }
-  .shiny-table th { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:#6b7280; font-weight:600; border-bottom:1px solid #171b24 !important; padding:6px 8px; background:transparent; }
-  .shiny-table td { border-bottom:1px solid #ece8de !important; border-top:0 !important; padding:7px 8px; background:transparent; }
-  .shiny-table tr:hover td { background:#f4f1ea; }
-  .pos { color:#b5541a; } .neg { color:#4a6f94; }
-  .comp { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #ece8de; }
-  .comp .nm { font-weight:600; } .comp a { color:#171b24; text-decoration:underline; text-decoration-color:#c9c4b6; text-underline-offset:3px; }
-  .comp a:hover { text-decoration-color:#171b24; }
-  .comp .meta { color:#6b7280; font-size:.82rem; }
-  .comp .m { font-family:Charter, Georgia, serif; font-size:1.05rem; white-space:nowrap; }
-  .note { color:#6b7280; font-size:.8rem; line-height:1.45; margin:8px 0 0; }
+  .shiny-table th { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:#6b6580; font-weight:600; border-bottom:1px solid #1f1933 !important; padding:6px 8px; background:transparent; }
+  .shiny-table td { border-bottom:1px solid #ebe6f3 !important; border-top:0 !important; padding:7px 8px; background:transparent; }
+  .shiny-table tr:hover td { background:#f1edf8; }
+  .pos { color:#c77d14; } .neg { color:#6d5fa8; }
+  .comp { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #ebe6f3; }
+  .comp .nm { font-weight:600; } .comp a { color:#1f1933; text-decoration:underline; text-decoration-color:#cfc7e0; text-underline-offset:3px; }
+  .comp a:hover { text-decoration-color:#1f1933; }
+  .comp .meta { color:#6b6580; font-size:.82rem; }
+  .comp .m { font-family:var(--serif); font-size:1.05rem; white-space:nowrap; }
+  .legend { display:flex; align-items:center; gap:10px; justify-content:center; font-size:.78rem; color:#6b6580; margin-top:4px; }
+  .legend .bar { width:180px; height:6px; border-radius:3px; background:linear-gradient(90deg,#6d5fa8,#ebe6f3,#d9902a); }
+  .pgroup { margin-bottom:18px; }
+  .pgroup h4 { font-family:var(--bs-body-font-family); font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#6b6580; font-weight:600; margin:0 0 4px; }
+  .pr { display:grid; grid-template-columns:190px minmax(0,1fr) 64px 28px; align-items:center; gap:14px; padding:6px 0; border-bottom:1px solid #ebe6f3; }
+  .pr .pl { font-size:.9rem; }
+  .pr .pv { text-align:right; font-weight:500; }
+  .pr .pp { text-align:right; color:#9a93b3; font-size:.78rem; }
+  .track { position:relative; height:4px; background:#e6e0f0; border-radius:2px; }
+  .fill { position:absolute; left:0; top:0; height:4px; border-radius:2px; }
+  .dot { position:absolute; top:-4px; width:12px; height:12px; margin-left:-6px; border-radius:50%; }
+  .fill.mid, .dot.mid { background:#3b2a6b; } .fill.hi, .dot.hi { background:#c77d14; } .fill.lo, .dot.lo { background:#9a93b3; }
+  .note { color:#6b6580; font-size:.8rem; line-height:1.45; margin:8px 0 0; }
   .filters { display:flex; flex-wrap:wrap; gap:6px 22px; align-items:flex-end; }
   .filters .form-group { margin-bottom:6px; min-width:190px; }
-  .filters label { font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; color:#6b7280; font-weight:600; }
+  .filters label { font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; color:#6b6580; font-weight:600; }
   .prose { max-width:700px; line-height:1.6; }
   .prose h3 { font-size:1.25rem; margin:28px 0 6px; }
   @media (max-width: 760px) {
@@ -240,7 +258,7 @@ css <- "
     .player h1 { font-size:1.8rem; }
     .keys .k { flex:1 1 30%; border-left:0; padding-left:0; }
     #chart { height:360px !important; }
-    #pctplot { height:520px !important; }
+    .pr { grid-template-columns:118px minmax(0,1fr) 52px; gap:10px; } .pr .pp { display:none; }
     .shiny-table th, .shiny-table td { padding:6px 5px; font-size:.78rem; }
   }
 "
@@ -271,12 +289,12 @@ ui <- page_navbar(
                   radioButtons("view", NULL, inline = TRUE,
                                choices = c("Efficiency map" = "hex", "Every shot" = "pts"), selected = "hex"))),
           div(class = "two",
-              div(plotOutput("chart", height = "470px"), p(class = "note", textOutput("chart_note", inline = TRUE))),
+              div(plotOutput("chart", height = "440px"), uiOutput("chart_legend"), p(class = "note", textOutput("chart_note", inline = TRUE))),
               div(div(style = "overflow-x:auto;", tableOutput("zones")),
                   p(class = "note", "League is every shot by every player in the data. Zone FG% is lightly pulled toward the league average for small samples.")))),
       div(class = "sect", h3("Percentiles against all qualified players"),
-          plotOutput("pctplot", height = "560px"),
-          p(class = "note", "Orange = top 20%, grey = bottom 20%. Shot quality is expected points per shot from where the shots were taken. Shot-making is points per 100 shots above or below that expectation.")),
+          uiOutput("pctplot"),
+          p(class = "note", "Amber = top 20%, grey = bottom 20%. On wider screens the faint number at the far right is the percentile. Shot quality is expected points per shot from where the shots were taken. Shot-making is points per 100 shots above or below that expectation.")),
       div(class = "sect", h3("Similar players"),
           div(class = "two",
               div(p(class = "eyebrow", "Closest college profiles"), uiOutput("comps_college")),
@@ -399,8 +417,8 @@ server <- function(input, output, session) {
     if (input$view == "pts") {
       sh$res <- factor(ifelse(sh$made == 1, "Made", "Missed"), levels = c("Missed", "Made"))
       ggplot() + court_layer() + court_lines_layer(0.9) +
-        geom_point(data = sh[sh$res == "Missed", ], aes(hx, hy), shape = 4, size = 1.7, colour = "#b9b4a6", stroke = 0.6) +
-        geom_point(data = sh[sh$res == "Made", ], aes(hx, hy), shape = 21, size = 2.2, fill = NAVY, colour = "#fbfaf7", stroke = 0.4)
+        geom_point(data = sh[sh$res == "Missed", ], aes(hx, hy), shape = 4, size = 1.7, colour = "#bcb5cf", stroke = 0.6) +
+        geom_point(data = sh[sh$res == "Made", ], aes(hx, hy), shape = 21, size = 2.2, fill = NAVY, colour = "#faf8fc", stroke = 0.4)
     } else {
       h <- hex_assign(sh$hx, sh$hy)
       d <- data.frame(key = h$key, cx = h$cx, cy = h$cy, made = sh$made) |>
@@ -416,13 +434,17 @@ server <- function(input, output, session) {
       lim <- 0.14
       ggplot() + court_layer() +
         geom_polygon(data = poly, aes(px, py, group = id, fill = pmax(-lim, pmin(lim, diff))), colour = NA) +
-        scale_fill_gradient2(low = "#4a6f94", mid = "#ece8de", high = ACCENT, midpoint = 0,
+        scale_fill_gradient2(low = "#6d5fa8", mid = "#ebe6f3", high = "#d9902a", midpoint = 0,
                              limits = c(-lim, lim), breaks = c(-lim, 0, lim),
-                             labels = c("Worse", "League avg.", "Better"),
-                             name = NULL, guide = guide_colourbar(barwidth = 14, barheight = 0.4, ticks = FALSE)) +
+                             guide = "none") +
         court_lines_layer(0.85)
     }
-  }, res = 96, bg = "#fbfaf7")
+  }, res = 96, bg = "#faf8fc")
+
+  output$chart_legend <- renderUI({
+    if (input$view != "hex") return(NULL)
+    div(class = "legend", span("Worse than league"), div(class = "bar"), span("Better"))
+  })
 
   output$chart_note <- renderText({
     if (input$view == "hex")
@@ -449,32 +471,23 @@ server <- function(input, output, session) {
   }, sanitize.text.function = function(x) x, striped = FALSE, hover = FALSE, bordered = FALSE, align = "lrrrrr", width = "100%")
 
   # ---- Percentiles --------------------------------------------------------
-  output$pctplot <- renderPlot({
+  output$pctplot <- renderUI({
     p <- cur()
-    d <- bind_rows(lapply(M, function(m) data.frame(group = m[[3]], label = m[[2]], pct = p[[paste0("p_", m[[1]])]], val = m[[4]](p[[m[[1]]]]))))
-    d$group <- factor(d$group, levels = unique(d$group))
-    d$label <- factor(d$label, levels = rev(d$label))
-    d$col <- ifelse(d$pct >= 80, ACCENT, ifelse(d$pct <= 20, SLATE, NAVY))
-    w <- session$clientData$output_pctplot_width
-    narrow <- !is.null(w) && w < 520
-    ggplot(d, aes(y = label)) +
-      geom_segment(aes(x = 0, xend = 100, yend = label), colour = "#e4e0d6", linewidth = 2.2, lineend = "round") +
-      geom_segment(aes(x = 0, xend = pct, yend = label, colour = col), linewidth = 2.2, lineend = "round") +
-      geom_point(aes(x = pct, colour = col), size = 3.6) +
-      geom_text(aes(x = 106, label = val), hjust = 0, size = 3.5, colour = INK) +
-      scale_colour_identity() +
-      scale_x_continuous(breaks = c(0, 50, 100), expand = c(0, 0)) +
-      coord_cartesian(xlim = c(0, 100), clip = "off") +
-      facet_grid(group ~ ., scales = "free_y", space = "free_y", switch = "y") +
-      labs(x = "Percentile (0 = lowest, 100 = highest among qualified players)", y = NULL) +
-      theme_minimal(base_size = 12) +
-      theme(panel.grid = element_blank(), axis.text.x = element_text(colour = MUTED, size = 8), axis.title.x = element_text(colour = MUTED, size = 8.5, hjust = 0, margin = margin(t = 6)),
-            axis.text.y = element_text(colour = INK, size = 10.5, margin = margin(r = 14)),
-            strip.placement = "outside",
-            strip.text.y.left = if (narrow) element_blank() else element_text(angle = 0, hjust = 0, face = "bold", colour = INK, size = 8.5),
-            plot.background = element_rect(fill = "#fbfaf7", colour = NA), panel.spacing = unit(14, "pt"),
-            plot.margin = margin(4, if (narrow) 44 else 60, 4, 4))
-  }, res = 96, bg = "#fbfaf7")
+    groups <- unique(vapply(M, function(m) m[[3]], character(1)))
+    div(class = "pct", lapply(groups, function(g) {
+      div(class = "pgroup", h4(g),
+          lapply(Filter(function(m) m[[3]] == g, M), function(m) {
+            pc <- p[[paste0("p_", m[[1]])]]
+            col <- if (pc >= 80) "hi" else if (pc <= 20) "lo" else "mid"
+            div(class = "pr",
+                span(class = "pl", m[[2]]),
+                div(class = "track", div(class = paste("fill", col), style = sprintf("width:%.1f%%", pc)),
+                    div(class = paste("dot", col), style = sprintf("left:%.1f%%", pc))),
+                span(class = "pv", m[[4]](p[[m[[1]]]])),
+                span(class = "pp", paste0(round(pc))))
+          }))
+    }))
+  })
 
   # ---- Similar players ----------------------------------------------------
   comp_rows <- function(top, med, meta_fun, link) {
@@ -540,11 +553,11 @@ server <- function(input, output, session) {
     xl <- paste0(xl, if (xk %in% PCT_KEYS) " (%)" else ""); yl <- paste0(yl, if (yk %in% PCT_KEYS) " (%)" else "")
     plot_ly(d, x = ~xv, y = ~yv, color = ~archetype, text = ~tip, hoverinfo = "text",
             type = "scatter", mode = "markers", marker = list(size = 7, opacity = 0.8),
-            colors = c(NAVY, ACCENT, "#4a6f94", "#9aa0ad", "#b8912a", "#5f8f6b")) |>
-      layout(xaxis = list(title = xl, zeroline = FALSE, gridcolor = "#ece8de"),
-             yaxis = list(title = yl, zeroline = FALSE, gridcolor = "#ece8de"),
-             paper_bgcolor = "#fbfaf7", plot_bgcolor = "#fbfaf7", legend = list(orientation = "h", y = -0.2),
-             font = list(family = "Inter, -apple-system, Segoe UI, Arial, sans-serif", color = INK))
+            colors = c(NAVY, ACCENT, "#6d5fa8", "#9aa0ad", "#b8912a", "#5f8f6b")) |>
+      layout(xaxis = list(title = xl, zeroline = FALSE, gridcolor = "#ebe6f3"),
+             yaxis = list(title = yl, zeroline = FALSE, gridcolor = "#ebe6f3"),
+             paper_bgcolor = "#faf8fc", plot_bgcolor = "#faf8fc", legend = list(orientation = "h", y = -0.2),
+             font = list(family = "IBM Plex Sans, -apple-system, Segoe UI, Arial, sans-serif", color = INK))
   })
 }
 

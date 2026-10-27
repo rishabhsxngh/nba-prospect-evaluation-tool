@@ -25,3 +25,5 @@ Rscript scripts/build_data.R
 ```
 
 Downloads the season's play-by-play and box scores and writes `data/players.rds`, `data/shots.rds`, `data/nba_players.rds` and `data/league.rds`. Change `SEASON` at the top of the script to build a different season.
+
+Fonts: IBM Plex Sans and IBM Plex Serif (SIL Open Font License, see `www/fonts/OFL-IBM-Plex.txt`), bundled with the app.

@@ -2131,7 +2131,7 @@
   },
   "files": {
     "app.R": {
-      "checksum": "5f299ffef81bb1712382cec06497d9a6"
+      "checksum": "960a81d999494b40e79a806cda05744f"
     },
     "data/league.rds": {
       "checksum": "050f92f43f125fa6bc1b8bdefb10dd62"
@@ -2144,6 +2144,24 @@
     },
     "data/nba_players.rds": {
       "checksum": "8d9d860a5d5630fd0794f576131b3c98"
+    },
+    "www/fonts/IBMPlexSans-Medium.woff2": {
+      "checksum": "02ec1634545051e5c22c8653aab2cef1"
+    },
+    "www/fonts/IBMPlexSans-Regular.woff2": {
+      "checksum": "5aaadb685d3cd9db53791e7341387dda"
+    },
+    "www/fonts/IBMPlexSans-SemiBold.woff2": {
+      "checksum": "51d76d33ef858e0de4f2100395ed8618"
+    },
+    "www/fonts/IBMPlexSerif-Medium.woff2": {
+      "checksum": "cd5e2037b186d8a685fe27eb0915ccaa"
+    },
+    "www/fonts/IBMPlexSerif-Regular.woff2": {
+      "checksum": "ff8d479bebd84d8d73f2ec182e8d9a60"
+    },
+    "www/fonts/OFL-IBM-Plex.txt": {
+      "checksum": "4d4949dda4b23922e334f0cbf6179065"
     }
   },
   "users": null
